@@ -75,11 +75,14 @@ const LoginPage = () => {
     event.preventDefault()
     const { email, password } = values
 
+    const authToken = Cookies.get('accessToken')
+
     setLoading(true)
 
     const headers = {
       'Content-Type': 'application/json',
-      'Device-Type': 'web'
+      'Device-Type': 'web',
+      Authorization: `Bearer ${authToken}`
     }
 
     try {
@@ -100,6 +103,7 @@ const LoginPage = () => {
               data: { token, user }
             }
           } = r
+
           setLoginStatus(r.data.message)
           Cookies.set('accessToken', token, { expires: 30, secure: true })
           Cookies.set('user', JSON.stringify(user), { expires: 30, secure: true })
@@ -193,7 +197,7 @@ const LoginPage = () => {
               Welcome to {themeConfig.templateName}! 👋🏻
             </Typography>
           </Box>
-          <form onSubmit={hendleSubmit} autoComplete='off'>
+          <form method='post' action='/login' onSubmit={hendleSubmit} autoComplete='off'>
             <TextField
               autoFocus
               fullWidth
